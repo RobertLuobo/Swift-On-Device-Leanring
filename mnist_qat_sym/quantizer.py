@@ -7,11 +7,7 @@ QTensor = namedtuple('QTensor', ['tensor', 'scale', 'zero_point'])
 '''
 Following functions for symmetric Mapping-[-128 ~ +127] 
 '''
-<<<<<<< HEAD
 
-
-=======
->>>>>>> a07d8685c24c2283ec19e3dded4fee5711efadaf
 def calcScaleZeroPointSym(min_val, max_val, num_bits=8):
     # Calc Scale
     max_val = max(abs(min_val), abs(max_val))
@@ -83,11 +79,7 @@ Dong Xin paper uniform quantizer method: alpha * {0 , 1/127, -1/127, .... +1, -1
 formula:   
 \mathcal{Q}^{u}(\alpha, b)=\alpha \times\left\{0, \frac{\pm 1}{2^{b-1}-1}, \frac{\pm 2}{2^{b-1}-1}, \frac{\pm 3}{2^{b-1}-1}, \ldots,\pm 1\right\}
 '''
-<<<<<<< HEAD
 
-
-=======
->>>>>>> a07d8685c24c2283ec19e3dded4fee5711efadaf
 class Qconv2d_INT(torch.nn.Conv2d):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1,
                  padding=0, dilation=1, groups=1, bias=True):
@@ -108,13 +100,13 @@ class Qconv2d_INT(torch.nn.Conv2d):
                                             self.bias, self.stride, self.padding, self.dilation, self.groups)
 
         # step2 : find out alpha
-<<<<<<< HEAD
+
         input_alpha = (input.max() - input.min())
         weight_alpha = (self.weight.max() - self.weight.min())
-=======
+
         input_alpha = (input.max() - input.min()) 
         weight_alpha = (self.weight.max() - self.weight.min()) 
->>>>>>> a07d8685c24c2283ec19e3dded4fee5711efadaf
+
 
         global Conv_count
         Conv_count += 1
@@ -126,11 +118,10 @@ class Qconv2d_INT(torch.nn.Conv2d):
         output = output / (decimal_point ** 2) * input_alpha * weight_alpha
 
         # Step4 :  dequantizer
-<<<<<<< HEAD
+
         Qoutput = QTensor(tensor=output, scale=q_weight.scale, zero_point=(q_weight.zero_point))
-=======
         Qoutput = QTensor(tensor=output, scale=q_weight.scale,zero_point=(q_weight.zero_point))
->>>>>>> a07d8685c24c2283ec19e3dded4fee5711efadaf
+
         output = dequantize_tensor(Qoutput)
 
         return output
@@ -142,11 +133,7 @@ class Qconv2d_INT(torch.nn.Conv2d):
 '''
 Dong Xin paper uniform quantizer method: alpha * {0 , 1/127, -1/127, .... +1, -1 } by APoT
 '''
-<<<<<<< HEAD
 
-
-=======
->>>>>>> a07d8685c24c2283ec19e3dded4fee5711efadaf
 class QLinear_INT(torch.nn.Linear):
     def __init__(self, in_features, out_features, bias=True):
         torch.nn.Linear.__init__(self, in_features, out_features, bias=bias)
@@ -184,11 +171,7 @@ class QLinear_INT(torch.nn.Linear):
     def forward(self, input):
         return self._linear_forward(input)
 
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> a07d8685c24c2283ec19e3dded4fee5711efadaf
 '''
 Following functions for Asymmetric Mapping-[0-255] 
 '''
@@ -255,10 +238,7 @@ class FakeQuantOp(torch.autograd.Function):
         # print("backward")
         return grad_output
 
-<<<<<<< HEAD
 
-=======
->>>>>>> a07d8685c24c2283ec19e3dded4fee5711efadaf
 '''
 Fake quantization conv2d
 '''
@@ -279,10 +259,7 @@ class Qconv2d(torch.nn.Conv2d):
     def forward(self, input):
         return self.conv2d_forward(input)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> a07d8685c24c2283ec19e3dded4fee5711efadaf
 '''
 Fake quantization Linear
 '''
