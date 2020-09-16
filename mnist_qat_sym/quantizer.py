@@ -94,19 +94,22 @@ class Qconv2d_INT(torch.nn.Conv2d):
                                             q_weight.tensor.type(torch.IntTensor),
                                             self.bias, self.stride, self.padding, self.dilation, self.groups)
 
+        # step2 : find out alpha
+        input_alpha = (input.max() - input.min()) 
+        weight_alpha = (self.weight.max() - self.weight.min()) 
+
         global Conv_count
         Conv_count += 1
-        input_alpha = (input.max() - input.min()) / 2
-        weight_alpha = (self.weight.max() - self.weight.min()) / 2
         cfg.writer.add_scalars("Conv_input_alpha", {"Conv_input_alpha": input_alpha}, Conv_count)
         cfg.writer.add_scalars("Conv_weight_alpha", {"Conv_weight_alpha": input_alpha}, Conv_count)
-        decimal_point = 2 ** num_bits - 1
-        output = output / (decimal_point ** 2) * input_alpha * weight_alpha
-        # print(output.size())
-        # print(output == input)
-        Qoutput = QTensor(tensor=output, scale=q_weight.scale,zero_point=(q_weight.zero_point))
 
-        output = dequantize_tensor_sym(Qoutput)
+        # Step3 : calibration, add decimal point
+        decimal_point = 2 ** (num_bits - 1) - 1
+        output = output / (decimal_point ** 2) * input_alpha * weight_alpha
+
+        # Step4 :  dequantizer
+        Qoutput = QTensor(tensor=output, scale=q_weight.scale,zero_point=(q_weight.zero_point))
+        output = dequantize_tensor(Qoutput)
 
         return output
 
