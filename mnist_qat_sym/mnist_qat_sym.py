@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms, models
-import torchvision
+
 
 from quantizer import  Qconv2d_INT, QLinear_INT
 from Timer import Timer_logger
@@ -14,6 +14,7 @@ Timer_logger = Timer_logger()
 Timer_logger.log_info("===> training ")
 import time
 print(time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
+
 
 class mnistcnn(nn.Module):
     def __init__(self):
@@ -41,11 +42,6 @@ class mnistcnn(nn.Module):
             nn.Linear(1024, 10, bias=True),
             nn.ReLU(inplace=True),
         )
-        # self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
-        # self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
-        # self.conv2_drop = nn.Dropout2d()
-        # self.fc1 = nn.Linear(320, 50)
-        # self.fc2 = nn.Linear(50, 10)
 
     def forward(self, x):
         x = self.conv(x)
