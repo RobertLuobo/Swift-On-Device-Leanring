@@ -9,8 +9,9 @@ os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 class cfg:
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    # dataset = "CIFAR10"
+
     dataset = "MNIST"
+    # dataset = "CIFAR10"
     batch_size = 256
     test_batch_size = batch_size
 
