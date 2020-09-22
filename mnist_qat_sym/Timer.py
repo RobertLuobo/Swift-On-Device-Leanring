@@ -7,8 +7,7 @@ class Timer_logger:
         self.start_time = 0
         logging.basicConfig(filename=cfg.logger_path+time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())+'.log',
                             datefmt='%Y/%m/%d %H:%M:%S',
-                            level=logging.INFO
-                            )
+                            level=logging.INFO)
 
     def start(self):
         self.start_time = time.time()

@@ -4,6 +4,7 @@ from collections import namedtuple
 from config import cfg
 
 QTensor = namedtuple('QTensor', ['tensor', 'scale', 'zero_point'])
+
 '''
 Following functions for symmetric Mapping-[-128 ~ +127] 
 '''
@@ -77,7 +78,6 @@ fc_count = 0
 '''
 Dong Xin paper uniform quantizer method: alpha * {0 , 1/127, -1/127, .... +1, -1 } by APoT
 formula:   
-\mathcal{Q}^{u}(\alpha, b)=\alpha \times\left\{0, \frac{\pm 1}{2^{b-1}-1}, \frac{\pm 2}{2^{b-1}-1}, \frac{\pm 3}{2^{b-1}-1}, \ldots,\pm 1\right\}
 '''
 
 class Qconv2d_INT(torch.nn.Conv2d):
