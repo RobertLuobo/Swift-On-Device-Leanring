@@ -12,11 +12,11 @@ Following functions for symmetric Mapping-[-128 ~ +127]
 def calcScaleZeroPointSym(min_val, max_val, num_bits=8):
     # Calc Scale
     max_val = max(abs(min_val), abs(max_val))
-    qmin = 0.
     qmax = 2. ** (num_bits - 1) - 1.
-
-    scale = max_val / qmax
-    return scale, 0
+    qmin = -qmax
+    scale = (max_val - min_val) / (qmax - qmin)
+    zero_point = 0
+    return scale, zero_point
 
 
 n_count = 0
@@ -27,18 +27,18 @@ def quantize_tensor_input_sym(x, num_bits=8, min_val=None, max_val=None):
     if not min_val and not max_val:
         min_val, max_val = x.min(), x.max()
 
-    qmin = 0.
     qmax = 2. ** (num_bits - 1) - 1.
+
 
     scale, zero_point = calcScaleZeroPointSym(min_val, max_val, num_bits)
     q_x = x / scale
-    q_x.clamp_(-qmax - 1, qmax).round_()
+    # q_x.clamp_(-qmax - 1, qmax).round_()
     q_x = q_x.round()
 
     global input_n_count
     cfg.writer.add_histogram("input", x, n_count)
     cfg.writer.add_scalars("input_scale", {"input_scale": scale}, n_count)
-    cfg.writer.add_scalars("input_zero_point", {"input_zero_point": zero_point}, n_count)
+    # cfg.writer.add_scalars("input_zero_point", {"input_zero_point": zero_point}, n_count)
     input_n_count += 1
 
     return QTensor(tensor=q_x, scale=scale, zero_point=zero_point)
@@ -51,25 +51,25 @@ def quantize_tensor_weight_sym(x, num_bits=8, min_val=None, max_val=None):
     if not min_val and not max_val:
         min_val, max_val = x.min(), x.max()
 
-    qmin = 0.
     qmax = 2. ** (num_bits - 1) - 1.
 
     scale, zero_point = calcScaleZeroPointSym(min_val, max_val, num_bits)
     q_x = x / scale
-    q_x.clamp_(-qmax - 1, qmax).round_()
+    # q_x.clamp_(-qmax - 1, qmax).round_()
     q_x = q_x.round()
 
     global weight_n_count
     cfg.writer.add_histogram("weight", x, n_count)
     cfg.writer.add_scalars("weight_scale", {"weight_scale": scale}, n_count)
-    cfg.writer.add_scalars("weight_zero_point", {"weight_zero_point": zero_point}, n_count)
+    # cfg.writer.add_scalars("weight_zero_point", {"weight_zero_point": zero_point}, n_count)
     weight_n_count += 1
 
-    return QTensor(tensor=q_x, scale=scale, zero_point=0)
+    return QTensor(tensor=q_x, scale=scale, zero_point=zero_point)
 
 
 def dequantize_tensor_sym(q_x):
     return q_x.scale * (q_x.tensor.float())
+
 
 
 Conv_count = 0
@@ -93,36 +93,68 @@ class Qconv2d_INT(torch.nn.Conv2d):
         q_input = quantize_tensor_input_sym(input, num_bits=num_bits, min_val=min_val, max_val=max_val)
 
         q_weight = quantize_tensor_weight_sym(self.weight, num_bits=num_bits,
-                                              min_val=torch.min(self.weight), max_val=torch.max(self.weight))
+                                              min_val=torch.min(self.weight),
+                                              max_val=torch.max(self.weight)
+                                          )
 
-        output = torch.nn.functional.conv2d(q_input.tensor.type(torch.IntTensor),
-                                            q_weight.tensor.type(torch.IntTensor),
-                                            self.bias, self.stride, self.padding, self.dilation, self.groups)
+        if(self.bias != None):
+            bias = self.bias.view(self.out_channels,1,1)
 
+        int_x = q_input.tensor.type(torch.IntTensor)
+        int_w = q_weight.tensor.type(torch.IntTensor)
+        output = torch.nn.functional.conv2d(
+                        int_x,int_w,
+                        bias=None,
+                        stride=self.stride, padding=self.padding,
+                        dilation=self.dilation, groups=self.groups
+                )
+        # print(bias.size(), output.size())
         # step2 : find out alpha
 
-        input_alpha = (input.max() - input.min())
-        weight_alpha = (self.weight.max() - self.weight.min())
+        # input_alpha = (input.max() - input.min())
+        # weight_alpha = (self.weight.max() - self.weight.min())
+        #
+        # input_alpha = (input.max() - input.min())
+        # weight_alpha = (self.weight.max() - self.weight.min())
 
-        input_alpha = (input.max() - input.min()) 
-        weight_alpha = (self.weight.max() - self.weight.min()) 
-
-
+        '''Test quanti-value and dequanti-value'''
+        fp32_x = dequantize_tensor_sym(
+                    QTensor(
+                            tensor=int_x,
+                            scale=q_input.scale,
+                            zero_point=0
+                        )
+                    )
+        fp32_w = dequantize_tensor_sym(
+                    QTensor(
+                            tensor=int_w,
+                            scale=q_weight.scale,
+                            zero_point=0
+                        )
+                    )
+        # print("Qconv2d_INT input delta", torch.sum(input - fp32_x),
+        #       "\tweight delta：",torch.sum(self.weight - fp32_w))
         global Conv_count
+
         Conv_count += 1
-        cfg.writer.add_scalars("Conv_input_alpha", {"Conv_input_alpha": input_alpha}, Conv_count)
-        cfg.writer.add_scalars("Conv_weight_alpha", {"Conv_weight_alpha": input_alpha}, Conv_count)
+        # cfg.writer.add_scalars("Conv_input_alpha", {"Conv_input_alpha": input_alpha}, Conv_count)
+        # cfg.writer.add_scalars("Conv_weight_alpha", {"Conv_weight_alpha": input_alpha}, Conv_count)
 
         # Step3 : calibration, add decimal point
-        decimal_point = 2 ** (num_bits - 1) - 1
-        output = output / (decimal_point ** 2) * input_alpha * weight_alpha
-
+        # decimal_point = 2 ** (num_bits - 1) - 1
+        # output = output / (decimal_point ** 2) * input_alpha * weight_alpha
+        # output = output * (q_weight.scale * q_input.scale)
         # Step4 :  dequantizer
 
-        Qoutput = QTensor(tensor=output, scale=q_weight.scale, zero_point=(q_weight.zero_point))
-        Qoutput = QTensor(tensor=output, scale=q_weight.scale,zero_point=(q_weight.zero_point))
+        Qoutput = QTensor(
+                    tensor=output,
+                    scale=q_weight.scale * q_input.scale,
+                    zero_point=0
+                    )
 
-        output = dequantize_tensor(Qoutput)
+        output = dequantize_tensor_sym(Qoutput)
+        if (self.bias != None):
+            output = output + bias
 
         return output
 
@@ -146,25 +178,54 @@ class QLinear_INT(torch.nn.Linear):
         q_weight = quantize_tensor_weight_sym(self.weight, num_bits=num_bits,
                                               min_val=torch.min(self.weight), max_val=torch.max(self.weight))
 
-        output = torch.nn.functional.linear(q_input.tensor.type(torch.IntTensor),
-                                            q_weight.tensor.type(torch.IntTensor),
-                                            self.bias)
-        # step2 : find out alpha
-        input_alpha = (input.max() - input.min())
-        weight_alpha = (self.weight.max() - self.weight.min())
+        if(self.bias != None):
+            bias = self.bias
 
+        int_x = q_input.tensor.type(torch.IntTensor)
+        int_w = q_weight.tensor.type(torch.IntTensor)
+
+        output = torch.nn.functional.linear(int_x, int_w, bias = None)
+        # step2 : find out alpha
+        # input_alpha = (input.max() - input.min())
+        # weight_alpha = (self.weight.max() - self.weight.min())
+        '''Test quanti-value and dequanti-value'''
+        fp32_x = dequantize_tensor_sym(
+                    QTensor(
+                        tensor=int_x,
+                        scale=q_input.scale,
+                        zero_point=0
+                        )
+                )
+        fp32_w = dequantize_tensor_sym(
+                    QTensor(
+                        tensor=int_w,
+                        scale=q_weight.scale,
+                        zero_point=0
+                        )
+                )
+
+        # print("QLinear_INT input delta", torch.sum(input - fp32_x), "\tweight delta：", torch.sum((self.weight - fp32_w)))
         global Conv_count
         Conv_count += 1
-        cfg.writer.add_scalars("Conv_input_alpha", {"Conv_input_alpha": input_alpha}, Conv_count)
-        cfg.writer.add_scalars("Conv_weight_alpha", {"Conv_weight_alpha": input_alpha}, Conv_count)
+        # cfg.writer.add_scalars("Conv_input_alpha", {"Conv_input_alpha": input_alpha}, Conv_count)
+        # cfg.writer.add_scalars("Conv_weight_alpha", {"Conv_weight_alpha": input_alpha}, Conv_count)
 
         # Step3 : calibration, add decimal point
-        decimal_point = 2 ** (num_bits - 1) - 1
-        output = output / (decimal_point ** 2) * input_alpha * weight_alpha
+        # decimal_point = 2 ** (num_bits - 1) - 1
+        # output = output / (decimal_point ** 2) * input_alpha * weight_alpha
 
         # Step4 :  dequantizer
-        Qoutput = QTensor(tensor=output, scale=q_weight.scale, zero_point=(q_weight.zero_point))
-        output = dequantize_tensor(Qoutput)
+
+        Qoutput = QTensor(
+                tensor=output,
+                scale=q_weight.scale * q_input.scale,
+                zero_point=0
+               )
+
+        output = dequantize_tensor_sym(Qoutput)
+
+        if(self.bias != None):
+            output = output + bias
 
         return output
 
@@ -175,6 +236,7 @@ class QLinear_INT(torch.nn.Linear):
 '''
 Following functions for Asymmetric Mapping-[0-255] 
 '''
+
 def calcScaleZeroPoint(min_val, max_val, num_bits=8):
     # Calc Scale and zero point of next
     qmin = 0.

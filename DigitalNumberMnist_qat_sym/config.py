@@ -13,21 +13,21 @@ class cfg:
     dataset = "MNIST"
     # dataset = "FashionMNIST"
     # dataset = "CIFAR10"
-    batch_size = 256
+    batch_size = 1024
     test_batch_size = batch_size
 
     input_size = 28
     epoch = 20
-    lr = 0.01
+    lr = 0.1
     momentum = 0.9
     seed = 1
 
     # QAT cfg
-    start_QAT_epoch = 0
+    start_QAT_epoch = 2
     num_bits = 8
 
     # log config
-    log_interval = 39
+    log_interval = 12
     save_model = False
     no_cuda = False
 
@@ -36,7 +36,8 @@ class cfg:
     logger_path = './logger/log'
 
     # 构建 SummaryWriter
-    writer = SummaryWriter(comment='test_your_comment', filename_suffix="_test_your_filename_suffix")
+    writer = SummaryWriter(comment='test_your_comment',
+                           filename_suffix="_test_your_filename_suffix")
 
 
 

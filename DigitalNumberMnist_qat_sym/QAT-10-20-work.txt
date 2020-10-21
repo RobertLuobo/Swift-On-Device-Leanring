@@ -1,0 +1,260 @@
+C:\Users\Public\Anaconda\envs\kdpt\python.exe "C:\Program Files\JetBrains\PyCharm Community Edition 2020.2\plugins\python-ce\helpers\pydev\pydevconsole.py" --mode=client --port=56367
+import sys; print('Python %s on %s' % (sys.version, sys.platform))
+sys.path.extend(['C:\\Users\\Zhou Qihua\\Desktop\\luo', 'C:/Users/Zhou Qihua/Desktop/luo'])
+Python 3.6.10 |Anaconda, Inc.| (default, May  7 2020, 19:46:08) [MSC v.1916 64 bit (AMD64)]
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.15.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.15.0
+Python 3.6.10 |Anaconda, Inc.| (default, May  7 2020, 19:46:08) [MSC v.1916 64 bit (AMD64)] on win32
+runfile('C:/Users/Zhou Qihua/Desktop/luo/DigitalNumberMnist_qat_sym/mnist_qat_sym.py', wdir='C:/Users/Zhou Qihua/Desktop/luo/DigitalNumberMnist_qat_sym')
+2020-10-20 09:43:27.289486: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library cudart64_101.dll
+2020-10-20-09-43-29
+C:/Users/Zhou Qihua/Desktop/luo/DigitalNumberMnist_qat_sym/mnist_qat_sym.py:56: UserWarning: Implicit dimension choice for log_softmax has been deprecated. Change the call to include dim=X as an argument.
+  return F.log_softmax(x)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1         [1024, 32, 26, 26]             320
+       BatchNorm2d-2         [1024, 32, 26, 26]              64
+              ReLU-3         [1024, 32, 26, 26]               0
+            Conv2d-4         [1024, 64, 24, 24]          18,496
+       BatchNorm2d-5         [1024, 64, 24, 24]             128
+              ReLU-6         [1024, 64, 24, 24]               0
+         MaxPool2d-7         [1024, 64, 12, 12]               0
+            Linear-8               [1024, 1024]       9,438,208
+              ReLU-9               [1024, 1024]               0
+           Linear-10                 [1024, 10]          10,250
+             ReLU-11                 [1024, 10]               0
+================================================================
+Total params: 9,467,466
+Trainable params: 9,467,466
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 3.06
+Forward/backward pass size (MB): 1459.16
+Params size (MB): 36.12
+Estimated Total Size (MB): 1498.33
+----------------------------------------------------------------
+None
+SGD
+mnistcnn(
+  (conv): Sequential(
+    (0): Conv2d(1, 32, kernel_size=(3, 3), stride=(1, 1))
+    (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+    (3): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1))
+    (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): ReLU(inplace=True)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc): Sequential(
+    (0): Linear(in_features=9216, out_features=1024, bias=True)
+    (1): ReLU(inplace=True)
+    (2): Linear(in_features=1024, out_features=10, bias=True)
+    (3): ReLU(inplace=True)
+  )
+)
+Train_Acc_list:  []
+Train_Loss_list: []
+Test_Acc_list:  []
+Train_Loss_list: []
+conv
+0 <class 'torch.nn.modules.conv.Conv2d'>
+Qconv2d_INT(1, 32, kernel_size=(3, 3), stride=(1, 1))
+1 <class 'torch.nn.modules.batchnorm.BatchNorm2d'>
+2 <class 'torch.nn.modules.activation.ReLU'>
+3 <class 'torch.nn.modules.conv.Conv2d'>
+Qconv2d_INT(32, 64, kernel_size=(3, 3), stride=(1, 1))
+4 <class 'torch.nn.modules.batchnorm.BatchNorm2d'>
+5 <class 'torch.nn.modules.activation.ReLU'>
+6 <class 'torch.nn.modules.pooling.MaxPool2d'>
+fc
+0 <class 'torch.nn.modules.linear.Linear'>
+QLinear_INT(in_features=9216, out_features=1024, bias=True)
+1 <class 'torch.nn.modules.activation.ReLU'>
+2 <class 'torch.nn.modules.linear.Linear'>
+3 <class 'torch.nn.modules.activation.ReLU'>
+10
+mnistcnn(
+  (conv): Sequential(
+    (0): Qconv2d_INT(1, 32, kernel_size=(3, 3), stride=(1, 1))
+    (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+    (3): Qconv2d_INT(32, 64, kernel_size=(3, 3), stride=(1, 1))
+    (4): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): ReLU(inplace=True)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (fc): Sequential(
+    (0): QLinear_INT(in_features=9216, out_features=1024, bias=True)
+    (1): ReLU(inplace=True)
+    (2): Linear(in_features=1024, out_features=10, bias=True)
+    (3): ReLU(inplace=True)
+  )
+)
+C:\Users\Public\Anaconda\envs\kdpt\lib\site-packages\torch\optim\lr_scheduler.py:123: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  "https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate", UserWarning)
+Before epoch training: 0.1
+Train Epoch: 1 [0/60000 (0%)]	Train_Loss: 2.274979	Train_Acc[168/1024]: 16.406%
+Train Epoch: 1 [10240/60000 (17%)]	Train_Loss: 0.800664	Train_Acc[825/1024]: 80.566%
+Train Epoch: 1 [20480/60000 (34%)]	Train_Loss: 0.451687	Train_Acc[891/1024]: 87.012%
+Train Epoch: 1 [30720/60000 (51%)]	Train_Loss: 0.313075	Train_Acc[923/1024]: 90.137%
+Train Epoch: 1 [40960/60000 (68%)]	Train_Loss: 0.338243	Train_Acc[916/1024]: 89.453%
+Train Epoch: 1 [51200/60000 (85%)]	Train_Loss: 0.267023	Train_Acc[931/1024]: 90.918%
+Test set: Average vaildation loss: 2.7203, vaild_Acc: 9239/10000 (92.39%)
+Before epoch training: 0.1
+Train Epoch: 2 [0/60000 (0%)]	Train_Loss: 0.260965	Train_Acc[946/1024]: 92.383%
+Train Epoch: 2 [10240/60000 (17%)]	Train_Loss: 0.306389	Train_Acc[936/1024]: 91.406%
+Train Epoch: 2 [20480/60000 (34%)]	Train_Loss: 0.252377	Train_Acc[952/1024]: 92.969%
+Train Epoch: 2 [30720/60000 (51%)]	Train_Loss: 0.229471	Train_Acc[952/1024]: 92.969%
+Train Epoch: 2 [40960/60000 (68%)]	Train_Loss: 0.210028	Train_Acc[960/1024]: 93.750%
+Train Epoch: 2 [51200/60000 (85%)]	Train_Loss: 0.220788	Train_Acc[960/1024]: 93.750%
+Test set: Average vaildation loss: 2.1266, vaild_Acc: 9418/10000 (94.18%)
+Before epoch training: 0.1
+Train Epoch: 3 [0/60000 (0%)]	Train_Loss: 0.278242	Train_Acc[936/1024]: 91.406%
+Train Epoch: 3 [10240/60000 (17%)]	Train_Loss: 0.198556	Train_Acc[965/1024]: 94.238%
+Train Epoch: 3 [20480/60000 (34%)]	Train_Loss: 0.236184	Train_Acc[953/1024]: 93.066%
+Train Epoch: 3 [30720/60000 (51%)]	Train_Loss: 0.198465	Train_Acc[968/1024]: 94.531%
+Train Epoch: 3 [40960/60000 (68%)]	Train_Loss: 0.169272	Train_Acc[978/1024]: 95.508%
+Train Epoch: 3 [51200/60000 (85%)]	Train_Loss: 0.268126	Train_Acc[945/1024]: 92.285%
+Test set: Average vaildation loss: 1.8905, vaild_Acc: 9473/10000 (94.73%)
+Before epoch training: 0.1
+Train Epoch: 4 [0/60000 (0%)]	Train_Loss: 0.192201	Train_Acc[968/1024]: 94.531%
+Train Epoch: 4 [10240/60000 (17%)]	Train_Loss: 0.218876	Train_Acc[959/1024]: 93.652%
+Train Epoch: 4 [20480/60000 (34%)]	Train_Loss: 0.184008	Train_Acc[972/1024]: 94.922%
+Train Epoch: 4 [30720/60000 (51%)]	Train_Loss: 0.176159	Train_Acc[967/1024]: 94.434%
+Train Epoch: 4 [40960/60000 (68%)]	Train_Loss: 0.174854	Train_Acc[975/1024]: 95.215%
+Train Epoch: 4 [51200/60000 (85%)]	Train_Loss: 0.174118	Train_Acc[975/1024]: 95.215%
+Test set: Average vaildation loss: 1.7493, vaild_Acc: 9503/10000 (95.03%)
+Before epoch training: 0.1
+Train Epoch: 5 [0/60000 (0%)]	Train_Loss: 0.199033	Train_Acc[969/1024]: 94.629%
+Train Epoch: 5 [10240/60000 (17%)]	Train_Loss: 0.205781	Train_Acc[949/1024]: 92.676%
+Train Epoch: 5 [20480/60000 (34%)]	Train_Loss: 0.219556	Train_Acc[958/1024]: 93.555%
+Train Epoch: 5 [30720/60000 (51%)]	Train_Loss: 0.155450	Train_Acc[977/1024]: 95.410%
+Train Epoch: 5 [40960/60000 (68%)]	Train_Loss: 0.166792	Train_Acc[974/1024]: 95.117%
+Train Epoch: 5 [51200/60000 (85%)]	Train_Loss: 0.205183	Train_Acc[963/1024]: 94.043%
+Test set: Average vaildation loss: 1.6670, vaild_Acc: 9534/10000 (95.34%)
+Before epoch training: 0.1
+Train Epoch: 6 [0/60000 (0%)]	Train_Loss: 0.174704	Train_Acc[975/1024]: 95.215%
+Train Epoch: 6 [10240/60000 (17%)]	Train_Loss: 0.201680	Train_Acc[963/1024]: 94.043%
+Train Epoch: 6 [20480/60000 (34%)]	Train_Loss: 0.173626	Train_Acc[974/1024]: 95.117%
+Train Epoch: 6 [30720/60000 (51%)]	Train_Loss: 0.168604	Train_Acc[969/1024]: 94.629%
+Train Epoch: 6 [40960/60000 (68%)]	Train_Loss: 0.183950	Train_Acc[967/1024]: 94.434%
+Train Epoch: 6 [51200/60000 (85%)]	Train_Loss: 0.149456	Train_Acc[982/1024]: 95.898%
+Test set: Average vaildation loss: 1.5865, vaild_Acc: 9555/10000 (95.55%)
+Before epoch training: 0.1
+Train Epoch: 7 [0/60000 (0%)]	Train_Loss: 0.187027	Train_Acc[965/1024]: 94.238%
+Train Epoch: 7 [10240/60000 (17%)]	Train_Loss: 0.149511	Train_Acc[974/1024]: 95.117%
+Train Epoch: 7 [20480/60000 (34%)]	Train_Loss: 0.157941	Train_Acc[983/1024]: 95.996%
+Train Epoch: 7 [30720/60000 (51%)]	Train_Loss: 0.180683	Train_Acc[975/1024]: 95.215%
+Train Epoch: 7 [40960/60000 (68%)]	Train_Loss: 0.188585	Train_Acc[964/1024]: 94.141%
+Train Epoch: 7 [51200/60000 (85%)]	Train_Loss: 0.151402	Train_Acc[985/1024]: 96.191%
+Test set: Average vaildation loss: 1.4891, vaild_Acc: 9570/10000 (95.7%)
+Before epoch training: 0.1
+Train Epoch: 8 [0/60000 (0%)]	Train_Loss: 0.143437	Train_Acc[981/1024]: 95.801%
+Train Epoch: 8 [10240/60000 (17%)]	Train_Loss: 0.138837	Train_Acc[982/1024]: 95.898%
+Train Epoch: 8 [20480/60000 (34%)]	Train_Loss: 0.133594	Train_Acc[981/1024]: 95.801%
+Train Epoch: 8 [30720/60000 (51%)]	Train_Loss: 0.110426	Train_Acc[993/1024]: 96.973%
+Train Epoch: 8 [40960/60000 (68%)]	Train_Loss: 0.161326	Train_Acc[973/1024]: 95.020%
+Train Epoch: 8 [51200/60000 (85%)]	Train_Loss: 0.154960	Train_Acc[979/1024]: 95.605%
+Test set: Average vaildation loss: 1.4728, vaild_Acc: 9568/10000 (95.68%)
+Before epoch training: 0.1
+Train Epoch: 9 [0/60000 (0%)]	Train_Loss: 0.124918	Train_Acc[993/1024]: 96.973%
+Train Epoch: 9 [10240/60000 (17%)]	Train_Loss: 0.149965	Train_Acc[979/1024]: 95.605%
+Train Epoch: 9 [20480/60000 (34%)]	Train_Loss: 0.116573	Train_Acc[996/1024]: 97.266%
+Train Epoch: 9 [30720/60000 (51%)]	Train_Loss: 0.146169	Train_Acc[977/1024]: 95.410%
+Train Epoch: 9 [40960/60000 (68%)]	Train_Loss: 0.181500	Train_Acc[970/1024]: 94.727%
+Train Epoch: 9 [51200/60000 (85%)]	Train_Loss: 0.127891	Train_Acc[984/1024]: 96.094%
+Test set: Average vaildation loss: 1.4233, vaild_Acc: 9593/10000 (95.93%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 10 [0/60000 (0%)]	Train_Loss: 0.117229	Train_Acc[990/1024]: 96.680%
+Train Epoch: 10 [10240/60000 (17%)]	Train_Loss: 0.139928	Train_Acc[987/1024]: 96.387%
+Train Epoch: 10 [20480/60000 (34%)]	Train_Loss: 0.131190	Train_Acc[981/1024]: 95.801%
+Train Epoch: 10 [30720/60000 (51%)]	Train_Loss: 0.143267	Train_Acc[987/1024]: 96.387%
+Train Epoch: 10 [40960/60000 (68%)]	Train_Loss: 0.128432	Train_Acc[984/1024]: 96.094%
+Train Epoch: 10 [51200/60000 (85%)]	Train_Loss: 0.154106	Train_Acc[978/1024]: 95.508%
+Test set: Average vaildation loss: 1.3768, vaild_Acc: 9601/10000 (96.01%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 11 [0/60000 (0%)]	Train_Loss: 0.151805	Train_Acc[973/1024]: 95.020%
+Train Epoch: 11 [10240/60000 (17%)]	Train_Loss: 0.138420	Train_Acc[988/1024]: 96.484%
+Train Epoch: 11 [20480/60000 (34%)]	Train_Loss: 0.119337	Train_Acc[990/1024]: 96.680%
+Train Epoch: 11 [30720/60000 (51%)]	Train_Loss: 0.117801	Train_Acc[986/1024]: 96.289%
+Train Epoch: 11 [40960/60000 (68%)]	Train_Loss: 0.141561	Train_Acc[984/1024]: 96.094%
+Train Epoch: 11 [51200/60000 (85%)]	Train_Loss: 0.128436	Train_Acc[983/1024]: 95.996%
+Test set: Average vaildation loss: 1.3783, vaild_Acc: 9602/10000 (96.02%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 12 [0/60000 (0%)]	Train_Loss: 0.113557	Train_Acc[992/1024]: 96.875%
+Train Epoch: 12 [10240/60000 (17%)]	Train_Loss: 0.120921	Train_Acc[991/1024]: 96.777%
+Train Epoch: 12 [20480/60000 (34%)]	Train_Loss: 0.158140	Train_Acc[980/1024]: 95.703%
+Train Epoch: 12 [30720/60000 (51%)]	Train_Loss: 0.155478	Train_Acc[985/1024]: 96.191%
+Train Epoch: 12 [40960/60000 (68%)]	Train_Loss: 0.143947	Train_Acc[984/1024]: 96.094%
+Train Epoch: 12 [51200/60000 (85%)]	Train_Loss: 0.125067	Train_Acc[988/1024]: 96.484%
+Test set: Average vaildation loss: 1.3682, vaild_Acc: 9598/10000 (95.98%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 13 [0/60000 (0%)]	Train_Loss: 0.117784	Train_Acc[996/1024]: 97.266%
+Train Epoch: 13 [10240/60000 (17%)]	Train_Loss: 0.129570	Train_Acc[981/1024]: 95.801%
+Train Epoch: 13 [20480/60000 (34%)]	Train_Loss: 0.123297	Train_Acc[988/1024]: 96.484%
+Train Epoch: 13 [30720/60000 (51%)]	Train_Loss: 0.121278	Train_Acc[981/1024]: 95.801%
+Train Epoch: 13 [40960/60000 (68%)]	Train_Loss: 0.130203	Train_Acc[983/1024]: 95.996%
+Train Epoch: 13 [51200/60000 (85%)]	Train_Loss: 0.130785	Train_Acc[985/1024]: 96.191%
+Test set: Average vaildation loss: 1.3759, vaild_Acc: 9597/10000 (95.97%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 14 [0/60000 (0%)]	Train_Loss: 0.119020	Train_Acc[990/1024]: 96.680%
+Train Epoch: 14 [10240/60000 (17%)]	Train_Loss: 0.144540	Train_Acc[983/1024]: 95.996%
+Train Epoch: 14 [20480/60000 (34%)]	Train_Loss: 0.133972	Train_Acc[977/1024]: 95.410%
+Train Epoch: 14 [30720/60000 (51%)]	Train_Loss: 0.116960	Train_Acc[991/1024]: 96.777%
+Train Epoch: 14 [40960/60000 (68%)]	Train_Loss: 0.108363	Train_Acc[992/1024]: 96.875%
+Train Epoch: 14 [51200/60000 (85%)]	Train_Loss: 0.111508	Train_Acc[986/1024]: 96.289%
+Test set: Average vaildation loss: 1.3634, vaild_Acc: 9596/10000 (95.96%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 15 [0/60000 (0%)]	Train_Loss: 0.112476	Train_Acc[991/1024]: 96.777%
+Train Epoch: 15 [10240/60000 (17%)]	Train_Loss: 0.128607	Train_Acc[982/1024]: 95.898%
+Train Epoch: 15 [20480/60000 (34%)]	Train_Loss: 0.131511	Train_Acc[984/1024]: 96.094%
+Train Epoch: 15 [30720/60000 (51%)]	Train_Loss: 0.112942	Train_Acc[991/1024]: 96.777%
+Train Epoch: 15 [40960/60000 (68%)]	Train_Loss: 0.109807	Train_Acc[990/1024]: 96.680%
+Train Epoch: 15 [51200/60000 (85%)]	Train_Loss: 0.136060	Train_Acc[983/1024]: 95.996%
+Test set: Average vaildation loss: 1.3609, vaild_Acc: 9594/10000 (95.94%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 16 [0/60000 (0%)]	Train_Loss: 0.121183	Train_Acc[985/1024]: 96.191%
+Train Epoch: 16 [10240/60000 (17%)]	Train_Loss: 0.119963	Train_Acc[988/1024]: 96.484%
+Train Epoch: 16 [20480/60000 (34%)]	Train_Loss: 0.123214	Train_Acc[986/1024]: 96.289%
+Train Epoch: 16 [30720/60000 (51%)]	Train_Loss: 0.134101	Train_Acc[978/1024]: 95.508%
+Train Epoch: 16 [40960/60000 (68%)]	Train_Loss: 0.120631	Train_Acc[996/1024]: 97.266%
+Train Epoch: 16 [51200/60000 (85%)]	Train_Loss: 0.113915	Train_Acc[993/1024]: 96.973%
+Test set: Average vaildation loss: 1.3614, vaild_Acc: 9594/10000 (95.94%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 17 [0/60000 (0%)]	Train_Loss: 0.111699	Train_Acc[996/1024]: 97.266%
+Train Epoch: 17 [10240/60000 (17%)]	Train_Loss: 0.121937	Train_Acc[993/1024]: 96.973%
+Train Epoch: 17 [20480/60000 (34%)]	Train_Loss: 0.120972	Train_Acc[987/1024]: 96.387%
+Train Epoch: 17 [30720/60000 (51%)]	Train_Loss: 0.134731	Train_Acc[987/1024]: 96.387%
+Train Epoch: 17 [40960/60000 (68%)]	Train_Loss: 0.121360	Train_Acc[991/1024]: 96.777%
+Train Epoch: 17 [51200/60000 (85%)]	Train_Loss: 0.138644	Train_Acc[988/1024]: 96.484%
+Test set: Average vaildation loss: 1.3619, vaild_Acc: 9596/10000 (95.96%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 18 [0/60000 (0%)]	Train_Loss: 0.152844	Train_Acc[981/1024]: 95.801%
+Train Epoch: 18 [10240/60000 (17%)]	Train_Loss: 0.142740	Train_Acc[979/1024]: 95.605%
+Train Epoch: 18 [20480/60000 (34%)]	Train_Loss: 0.124664	Train_Acc[996/1024]: 97.266%
+Train Epoch: 18 [30720/60000 (51%)]	Train_Loss: 0.129206	Train_Acc[992/1024]: 96.875%
+Train Epoch: 18 [40960/60000 (68%)]	Train_Loss: 0.132112	Train_Acc[987/1024]: 96.387%
+Train Epoch: 18 [51200/60000 (85%)]	Train_Loss: 0.164890	Train_Acc[977/1024]: 95.410%
+Test set: Average vaildation loss: 1.3573, vaild_Acc: 9595/10000 (95.95%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 19 [0/60000 (0%)]	Train_Loss: 0.141489	Train_Acc[986/1024]: 96.289%
+Train Epoch: 19 [10240/60000 (17%)]	Train_Loss: 0.139100	Train_Acc[985/1024]: 96.191%
+Train Epoch: 19 [20480/60000 (34%)]	Train_Loss: 0.112107	Train_Acc[995/1024]: 97.168%
+Train Epoch: 19 [30720/60000 (51%)]	Train_Loss: 0.127177	Train_Acc[989/1024]: 96.582%
+Train Epoch: 19 [40960/60000 (68%)]	Train_Loss: 0.132355	Train_Acc[985/1024]: 96.191%
+Train Epoch: 19 [51200/60000 (85%)]	Train_Loss: 0.130060	Train_Acc[981/1024]: 95.801%
+Test set: Average vaildation loss: 1.3612, vaild_Acc: 9594/10000 (95.94%)
+Before epoch training: 0.010000000000000002
+Train Epoch: 20 [0/60000 (0%)]	Train_Loss: 0.122294	Train_Acc[998/1024]: 97.461%
+Train Epoch: 20 [10240/60000 (17%)]	Train_Loss: 0.146092	Train_Acc[985/1024]: 96.191%
+Train Epoch: 20 [20480/60000 (34%)]	Train_Loss: 0.113593	Train_Acc[992/1024]: 96.875%
+Train Epoch: 20 [30720/60000 (51%)]	Train_Loss: 0.114922	Train_Acc[987/1024]: 96.387%
+Train Epoch: 20 [40960/60000 (68%)]	Train_Loss: 0.103338	Train_Acc[996/1024]: 97.266%
+Train Epoch: 20 [51200/60000 (85%)]	Train_Loss: 0.125550	Train_Acc[987/1024]: 96.387%
+Test set: Average vaildation loss: 1.3595, vaild_Acc: 9597/10000 (95.97%)
+Train_Acc_list:  [16.40625, 80.56640625, 87.01171875, 90.13671875, 89.453125, 90.91796875, 92.3828125, 91.40625, 92.96875, 92.96875, 93.75, 93.75, 91.40625, 94.23828125, 93.06640625, 94.53125, 95.5078125, 92.28515625, 94.53125, 93.65234375, 94.921875, 94.43359375, 95.21484375, 95.21484375, 94.62890625, 92.67578125, 93.5546875, 95.41015625, 95.1171875, 94.04296875, 95.21484375, 94.04296875, 95.1171875, 94.62890625, 94.43359375, 95.8984375, 94.23828125, 95.1171875, 95.99609375, 95.21484375, 94.140625, 96.19140625, 95.80078125, 95.8984375, 95.80078125, 96.97265625, 95.01953125, 95.60546875, 96.97265625, 95.60546875, 97.265625, 95.41015625, 94.7265625, 96.09375, 96.6796875, 96.38671875, 95.80078125, 96.38671875, 96.09375, 95.5078125, 95.01953125, 96.484375, 96.6796875, 96.2890625, 96.09375, 95.99609375, 96.875, 96.77734375, 95.703125, 96.19140625, 96.09375, 96.484375, 97.265625, 95.80078125, 96.484375, 95.80078125, 95.99609375, 96.19140625, 96.6796875, 95.99609375, 95.41015625, 96.77734375, 96.875, 96.2890625, 96.77734375, 95.8984375, 96.09375, 96.77734375, 96.6796875, 95.99609375, 96.19140625, 96.484375, 96.2890625, 95.5078125, 97.265625, 96.97265625, 97.265625, 96.97265625, 96.38671875, 96.38671875, 96.77734375, 96.484375, 95.80078125, 95.60546875, 97.265625, 96.875, 96.38671875, 95.41015625, 96.2890625, 96.19140625, 97.16796875, 96.58203125, 96.19140625, 95.80078125, 97.4609375, 96.19140625, 96.875, 96.38671875, 97.265625, 96.38671875]
+Train_Loss_list: [2.2749791145324707, 0.8006644248962402, 0.4516866207122803, 0.31307464838027954, 0.33824312686920166, 0.26702308654785156, 0.2609647810459137, 0.3063889145851135, 0.2523769736289978, 0.22947075963020325, 0.21002835035324097, 0.2207876741886139, 0.2782423496246338, 0.19855645298957825, 0.23618441820144653, 0.198465496301651, 0.16927196085453033, 0.2681255042552948, 0.19220121204853058, 0.21887585520744324, 0.18400838971138, 0.17615903913974762, 0.1748535931110382, 0.17411763966083527, 0.19903329014778137, 0.20578086376190186, 0.21955598890781403, 0.15544989705085754, 0.16679228842258453, 0.20518295466899872, 0.1747043877840042, 0.20167964696884155, 0.1736256331205368, 0.168603777885437, 0.18395031988620758, 0.14945606887340546, 0.1870274841785431, 0.14951086044311523, 0.15794076025485992, 0.18068312108516693, 0.18858522176742554, 0.15140166878700256, 0.14343708753585815, 0.13883720338344574, 0.13359405100345612, 0.11042596399784088, 0.16132625937461853, 0.15496033430099487, 0.12491831183433533, 0.149964839220047, 0.11657339334487915, 0.146168515086174, 0.18150021135807037, 0.12789088487625122, 0.11722910404205322, 0.13992802798748016, 0.13119037449359894, 0.1432671844959259, 0.1284322440624237, 0.15410564839839935, 0.15180523693561554, 0.1384199857711792, 0.1193372830748558, 0.11780054122209549, 0.14156083762645721, 0.12843558192253113, 0.11355724930763245, 0.12092119455337524, 0.15813997387886047, 0.15547847747802734, 0.14394693076610565, 0.12506705522537231, 0.11778413504362106, 0.1295696347951889, 0.12329723685979843, 0.12127804011106491, 0.13020280003547668, 0.1307852417230606, 0.11901972442865372, 0.14453984797000885, 0.1339721530675888, 0.11696039140224457, 0.10836316645145416, 0.11150788515806198, 0.11247570812702179, 0.12860684096813202, 0.13151127099990845, 0.11294174194335938, 0.10980688035488129, 0.13605965673923492, 0.12118346244096756, 0.11996284872293472, 0.1232139840722084, 0.13410064578056335, 0.12063117325305939, 0.1139146015048027, 0.11169862002134323, 0.12193724513053894, 0.12097200006246567, 0.1347314417362213, 0.12136048823595047, 0.13864359259605408, 0.1528443843126297, 0.14273986220359802, 0.12466427683830261, 0.12920570373535156, 0.1321123242378235, 0.16488996148109436, 0.14148864150047302, 0.13909968733787537, 0.112106554210186, 0.12717658281326294, 0.13235490024089813, 0.1300598680973053, 0.12229441106319427, 0.14609220623970032, 0.11359305679798126, 0.11492235213518143, 0.10333804786205292, 0.12555038928985596]
+Test_Acc_list:  [92.39, 94.18, 94.73, 95.03, 95.34, 95.55, 95.7, 95.68, 95.93, 96.01, 96.02, 95.98, 95.97, 95.96, 95.94, 95.94, 95.96, 95.95, 95.94, 95.97]
+Train_Loss_list: [2.720301643013954, 2.1265781819820404, 1.8904672712087631, 1.749292030930519, 1.6669946536421776, 1.5864572823047638, 1.489097572863102, 1.4727778881788254, 1.4232780486345291, 1.3768117427825928, 1.3782627061009407, 1.3682020008563995, 1.3759109377861023, 1.3633939698338509, 1.360907331109047, 1.3613831773400307, 1.361851304769516, 1.357317253947258, 1.3611914664506912, 1.3595043942332268]
